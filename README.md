@@ -1,4 +1,4 @@
-# Replicación de Data Warehouse (Bodega de Datos)
+# Implementación de Data Warehouse (Bodega de Datos)
  
 ## Herramientas utilizadas
 - MySql (Base de Datos)
