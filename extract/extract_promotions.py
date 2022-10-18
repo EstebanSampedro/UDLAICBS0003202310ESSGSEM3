@@ -43,7 +43,7 @@ def ext_promotions():
         promo_csv = pd.read_csv(config.get(cvsName, "PROMOTIONS_PATH"))
         #Procesa el contenido del archivo CSV 
         if not promo_csv.empty:
-            for id, pr_name, pr_cost, pr_begin, pr_end in zip(
+            for (id, prom_name, prom_cost, prom_begin, prom_end) in zip(
                 promo_csv["PROMO_ID"],
                 promo_csv["PROMO_NAME"],
                 promo_csv["PROMO_COST"],
@@ -51,10 +51,10 @@ def ext_promotions():
                 promo_csv["PROMO_END_DATE"],
             ):
                 promo_dict["promo_id"].append(id)
-                promo_dict["promo_name"].append(pr_name)
-                promo_dict["promo_cost"].append(pr_cost)
-                promo_dict["promo_begin_date"].append(pr_begin)
-                promo_dict["promo_end_date"].append(pr_end)
+                promo_dict["promo_name"].append(prom_name)
+                promo_dict["promo_cost"].append(prom_cost)
+                promo_dict["promo_begin_date"].append(prom_begin)
+                promo_dict["promo_end_date"].append(prom_end)
 
         if promo_dict["promo_id"]:
             con.connect().execute("TRUNCATE TABLE promotions")
