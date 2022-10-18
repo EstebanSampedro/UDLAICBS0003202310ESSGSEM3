@@ -51,7 +51,7 @@ def ext_customers():
         }
         #Leer el archivo CSV
         customers_csv = pd.read_csv(config.get(cvsName, "CUSTOMERS_PATH"))
-        #Procesa el contenido del archivo CSV 
+        #Procesa el contenido del archivo CSV
         if not customers_csv.empty:
             for id,first_name,last_name,gender,year_birth,m_status,street,postal,city,state_province,country_id,phone,income,credit,email, in zip(
                 customers_csv["CUST_ID"],

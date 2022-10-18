@@ -4,23 +4,24 @@ import pandas as pd
 import traceback
 
 #Extraccion
+from extract.extract_channels import ext_channels
+from extract.extract_countries import ext_countries
+from extract.extract_products import ext_products
+from extract.extract_customers import ext_customers
+from extract.extract_promotions import ext_promotions
+from extract.extract_sales import ext_sales
+from extract.extract_times import ext_times
 
 
 try:
-    #Variables de sesion
-    type = 'mysql'
-    host = 'localhost'
-    port = '3306'
-    user = 'esteban_udla'
-    pwd = 'esteban_udla'
-    db = 'essgdbsor'
-
-    con_db_stg = db_connection(type, host, port, user, pwd, db)
-    ses_db_stg = con_db_stg.start()
-    if ses_db_stg == -1:
-        raise Exception(f"The give database type {type} is not valid")
-    elif ses_db_stg == -2:
-        raise Exception("Error trying to connect to the b2b_dwh_staging database")
+    ext_channels()
+    ext_countries()
+    ext_customers()
+    ext_products()
+    ext_promotions()
+    ext_sales()
+    ext_times()
+    
 except:
     traceback.print_exc()
 finally:
