@@ -11,27 +11,13 @@ import traceback
 config = configparser.ConfigParser()
 config.read(".properties")
 config.get("DatabaseCredentials", "DB_TYPE")
-databaseName = "DatabaseCredentials"
-#Credenciales de la base de datos
-stg_connection = db_connection.Db_Connection(
-    config.get(databaseName, "DB_TYPE"),
-    config.get(databaseName, "DB_HOST"),
-    config.get(databaseName, "DB_PORT"),
-    config.get(databaseName, "DB_USER"),
-    config.get(databaseName, "DB_PWD"),
-    config.get(databaseName, "STG_NAME"),
-)
+
 #Ruta de los archivos CSV
 cvsName = "CSVFiles"
 
 
-def ext_products():
+def ext_products(con_db_stg):
     try:
-        con = stg_connection.start()
-        if con == -1:
-            raise Exception(f"The database type {stg_connection.type} is not valid")
-        elif con == -2:
-            raise Exception("Error trying to connect to essgdbstaging")
         products_dict = {
             "prod_id": [],
             "prod_name": [],
@@ -75,12 +61,11 @@ def ext_products():
                 products_dict["prod_min_price"].append(pro_min)
 
         if products_dict["prod_id"]:
-            con.connect().execute("TRUNCATE TABLE products")
+            con_db_stg.connect().execute("TRUNCATE TABLE products_ext")
             
             df_channels = pd.DataFrame(products_dict)
-            df_channels.to_sql("products", con, if_exists="append", index=False)
-         
-            con.dispose()
+            df_channels.to_sql("products_ext", con_db_stg, if_exists="append", index=False)
+
     except:
         traceback.print_exc()
     finally:

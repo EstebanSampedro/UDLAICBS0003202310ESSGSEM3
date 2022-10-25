@@ -11,27 +11,13 @@ import traceback
 config = configparser.ConfigParser()
 config.read(".properties")
 config.get("DatabaseCredentials", "DB_TYPE")
-databaseName = "DatabaseCredentials"
-#Credenciales de la base de datos
-stg_connection = db_connection.Db_Connection(
-    config.get(databaseName, "DB_TYPE"),
-    config.get(databaseName, "DB_HOST"),
-    config.get(databaseName, "DB_PORT"),
-    config.get(databaseName, "DB_USER"),
-    config.get(databaseName, "DB_PWD"),
-    config.get(databaseName, "STG_NAME"),
-)
+
 #Ruta de los archivos CSV
 cvsName = "CSVFiles"
 
 
-def ext_customers():
+def ext_customers(con_db_stg):
     try:
-        con = stg_connection.start()
-        if con == -1:
-            raise Exception(f"The database type {stg_connection.type} is not valid")
-        elif con == -2:
-            raise Exception("Error trying to connect to essgdbstaging")
         customers_dict = {
             "cust_id": [],
             "cust_first_name": [],
@@ -49,8 +35,10 @@ def ext_customers():
             "cust_credit_limit": [],
             "cust_email": [],
         }
+
         #Leer el archivo CSV
         customers_csv = pd.read_csv(config.get(cvsName, "CUSTOMERS_PATH"))
+
         #Procesa el contenido del archivo CSV
         if not customers_csv.empty:
             for id,first_name,last_name,gender,year_birth,m_status,street,postal,city,state_province,country_id,phone,income,credit,email, in zip(
@@ -87,12 +75,10 @@ def ext_customers():
                 customers_dict["cust_email"].append(email)
 
         if customers_dict["cust_id"]:
-            con.connect().execute("TRUNCATE TABLE customers")
-            
+            con_db_stg.connect().execute("TRUNCATE TABLE customers_ext")
             df_channels = pd.DataFrame(customers_dict)
-            df_channels.to_sql("customers", con, if_exists="append", index=False)
+            df_channels.to_sql("customers_ext", con_db_stg, if_exists="append", index=False)
          
-            con.dispose()
     except:
         traceback.print_exc()
     finally:

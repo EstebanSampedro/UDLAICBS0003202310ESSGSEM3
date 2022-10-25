@@ -11,27 +11,13 @@ import traceback
 config = configparser.ConfigParser()
 config.read(".properties")
 config.get("DatabaseCredentials", "DB_TYPE")
-databaseName = "DatabaseCredentials"
-#Credenciales de la base de datos
-stg_connection = db_connection.Db_Connection(
-    config.get(databaseName, "DB_TYPE"),
-    config.get(databaseName, "DB_HOST"),
-    config.get(databaseName, "DB_PORT"),
-    config.get(databaseName, "DB_USER"),
-    config.get(databaseName, "DB_PWD"),
-    config.get(databaseName, "STG_NAME"),
-)
+
 #Ruta de los archivos CSV
 cvsName = "CSVFiles"
 
 
-def ext_promotions():
+def ext_promotions(con_db_stg):
     try:
-        con = stg_connection.start()
-        if con == -1:
-            raise Exception(f"The database type {stg_connection.type} is not valid")
-        elif con == -2:
-            raise Exception("Error trying to connect to essgdbstaging")
         promo_dict = {
             "promo_id": [],
             "promo_name": [],
@@ -39,8 +25,10 @@ def ext_promotions():
             "promo_begin_date": [],
             "promo_end_date": [],
         }
+
         #Leer el archivo CSV
         promo_csv = pd.read_csv(config.get(cvsName, "PROMOTIONS_PATH"))
+
         #Procesa el contenido del archivo CSV 
         if not promo_csv.empty:
             for (id, prom_name, prom_cost, prom_begin, prom_end) in zip(
@@ -57,12 +45,12 @@ def ext_promotions():
                 promo_dict["promo_end_date"].append(prom_end)
 
         if promo_dict["promo_id"]:
-            con.connect().execute("TRUNCATE TABLE promotions")
+            con_db_stg.connect().execute("TRUNCATE TABLE promotions_ext")
             
             df_channels = pd.DataFrame(promo_dict)
-            df_channels.to_sql("promotions", con, if_exists="append", index=False)
+            df_channels.to_sql("promotions_ext", con_db_stg, if_exists="append", index=False)
          
-            con.dispose()
+            # con_db_stg.dispose()
     except:
         traceback.print_exc()
     finally:
