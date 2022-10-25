@@ -1,4 +1,5 @@
 from sqlalchemy import create_engine
+from sqlalchemy import insert
 import traceback
 
 class Db_Connection():
@@ -107,3 +108,6 @@ class Db_Connection():
         None
         """  
         self.connection.dispose()
+
+    def insert(self, table, val_dict):
+        self.insert(table).values(val_dict)
