@@ -7,7 +7,7 @@ def get_surrogate_keys(table_name, business_key_col, db_context):
     return pd.read_sql_query(f'SELECT surr_id, {natural_keys_str} FROM {table_name}', db_context).set_index(business_key_col).to_dict()['surr_id']
 
 
-def merge_dfs_tables(table_name, business_key_col, dataframe, db_context):
+def merge(table_name, business_key_col, dataframe, db_context):
     existing_table_key_pairs = get_surrogate_keys(table_name=table_name, business_key_col=business_key_col, db_context=db_context)
     columns = dataframe.columns.tolist()
     if len(columns) > 0:
