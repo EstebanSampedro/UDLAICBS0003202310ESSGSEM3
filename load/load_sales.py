@@ -56,7 +56,7 @@ def load_sales(cod_etl, con_db_stg, con_db_sor):
 
             df_new_sales = pd.DataFrame(sales_dict)
             #Merge method for loading
-            merge(table_name="new_sales",ids=["prod_id", "cust_id", "time_id", "channel_id", "promo_id"],dataframe=df_new_sales, db_context=con_db_sor)
+            merge(table_name="new_sales",key_col=["prod_id", "cust_id", "time_id", "channel_id", "promo_id"],dataframe=df_new_sales, db_context=con_db_sor)
     except:
         traceback.print_exc()
     finally:

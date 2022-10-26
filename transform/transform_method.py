@@ -17,7 +17,7 @@ def str_char(str):
     return str[0]
 
 
-def str_to_date(str):
+def str_date(str):
     return datetime.strptime(str, "%d-%b-%y")
 
 

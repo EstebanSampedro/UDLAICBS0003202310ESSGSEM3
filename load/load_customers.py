@@ -73,7 +73,7 @@ def load_customers(cod_etl, con_db_stg, con_db_sor):
             df_new_customer = pd.DataFrame(customers_dict)
             
             #merge method for loading 
-            merge(table_name="new_customers", business_key_col=["cust_id"], dataframe=df_new_customer,db_context=con_db_sor)
+            merge(table_name="new_customers",key_col=["cust_id"], dataframe=df_new_customer,db_context=con_db_sor)
         con_db_stg.dispose()
         con_db_sor.dispose()
     except Exception:

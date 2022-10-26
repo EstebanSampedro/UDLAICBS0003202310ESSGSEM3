@@ -1,6 +1,6 @@
 import traceback
 import pandas as pd
-from transform.transform_method import str_float, str_int
+from transform.transform_method import str_float, str_int, str_date
 
 
 def transform_promotions(cod_etl, con_db_stg):
@@ -32,8 +32,8 @@ def transform_promotions(cod_etl, con_db_stg):
                 promos_dict["promo_id"].append(str_int(id))
                 promos_dict["promo_name"].append(prom_name)
                 promos_dict["promo_cost"].append(str_float(prom_cost))
-                promos_dict["promo_begin_date"].append(prom_begin)
-                promos_dict["promo_end_date"].append(prom_end)
+                promos_dict["promo_begin_date"].append(str_date(prom_begin))
+                promos_dict["promo_end_date"].append(str_date(prom_end))
                 promos_dict["cod_etl"].append(cod_etl)
 
         if promos_dict["promo_id"]:

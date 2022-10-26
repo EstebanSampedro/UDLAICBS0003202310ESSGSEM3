@@ -1,6 +1,6 @@
 import traceback
 import pandas as pd
-from transform.transform_method import str_float, str_int
+from transform.transform_method import str_float, str_int, str_date
 
 
 def transform_sales(cod_etl, con_db_stg):
@@ -33,7 +33,7 @@ def transform_sales(cod_etl, con_db_stg):
             ):
                 sales_dict["prod_id"].append(str_int(id))
                 sales_dict["cust_id"].append(str_int(cus_id))
-                sales_dict["time_id"].append(time_id)
+                sales_dict["time_id"].append(str_date(time_id))
                 sales_dict["channel_id"].append(str_int(cha_id))
                 sales_dict["promo_id"].append(str_int(prom_id))
                 sales_dict["quantity_sold"].append(str_float(quant_sold))

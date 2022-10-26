@@ -7,15 +7,6 @@ def db_type_connection():
     config.read(".properties")
     sectionName = "DatabaseCredentials"
 
-    #STAGING DATABASE CONNECTION
-    stg_conn = db_connection.Db_Connection(
-        config.get(sectionName, "DB_TYPE"),
-        config.get(sectionName, "DB_HOST"),
-        config.get(sectionName, "DB_PORT"),
-        config.get(sectionName, "DB_USER"),
-        config.get(sectionName, "DB_PWD"),
-        config.get(sectionName, "STG_NAME"),
-    )
     #SOR DATABASE CONNECTION
     sor_conn = db_connection.Db_Connection(
         config.get(sectionName, "DB_TYPE"),
@@ -26,10 +17,22 @@ def db_type_connection():
         config.get(sectionName, "SOR_NAME"),
     )
 
+    #STAGING DATABASE CONNECTION
+    stg_conn = db_connection.Db_Connection(
+        config.get(sectionName, "DB_TYPE"),
+        config.get(sectionName, "DB_HOST"),
+        config.get(sectionName, "DB_PORT"),
+        config.get(sectionName, "DB_USER"),
+        config.get(sectionName, "DB_PWD"),
+        config.get(sectionName, "STG_NAME"),
+    )
+    
+
 
     #sessions config
-    con_db_stg = stg_conn.start()
     con_db_sor = sor_conn.start()
+    con_db_stg = stg_conn.start()
+    
     
 
     if con_db_stg == -1:

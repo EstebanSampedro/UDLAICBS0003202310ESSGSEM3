@@ -2,24 +2,24 @@ import pandas as pd
 from datetime import date
 
 #Get method for surrogate keys inside dbs
-def get_surrogate_keys(table_name, business_key_col, db_context):
-    natural_keys_str = ','.join(business_key_col)
-    return pd.read_sql_query(f'SELECT surr_id, {natural_keys_str} FROM {table_name}', db_context).set_index(business_key_col).to_dict()['surr_id']
+def get_surrogate_keys(table_name, key_col, db_context):
+    natural_keys_str = ','.join(key_col)
+    return pd.read_sql_query(f'SELECT surr_id, {natural_keys_str} FROM {table_name}', db_context).set_index(key_col).to_dict()['surr_id']
 
 
-def merge(table_name, business_key_col, dataframe, db_context):
-    existing_table_key_pairs = get_surrogate_keys(table_name=table_name, business_key_col=business_key_col, db_context=db_context)
+def merge(table_name, key_col, dataframe, db_context):
+    existing_table_key_pairs = get_surrogate_keys(table_name=table_name, key_col=key_col, db_context=db_context)
     columns = dataframe.columns.tolist()
     if len(columns) > 0:
-        for natural_key in business_key_col:
+        for natural_key in key_col:
             columns.remove(natural_key)
 
-    if len(business_key_col) == 1:
+    if len(key_col) == 1:
         dataframe['surr_id'] = dataframe.apply(
-            lambda row: existing_table_key_pairs.get(*tuple(row[business_key_col].values), None), axis=1)
+            lambda row: existing_table_key_pairs.get(*tuple(row[key_col].values), None), axis=1)
     else:
         dataframe['surr_id'] = dataframe.apply(
-            lambda row: existing_table_key_pairs.get(tuple(row[business_key_col].values), None), axis=1)
+            lambda row: existing_table_key_pairs.get(tuple(row[key_col].values), None), axis=1)
 
     elements_to_update = dataframe[dataframe['surr_id'].notnull()]
 
@@ -36,7 +36,7 @@ def merge(table_name, business_key_col, dataframe, db_context):
         elements_to_insert.to_sql(table_name, db_context, if_exists='append', index=False)
 
 
-def etl_code(con_db_stg):
+def etl_code_method(con_db_stg):
     etl_dict = {
         "created_at": [],
     }
